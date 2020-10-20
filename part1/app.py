@@ -17,11 +17,20 @@ def about():
     return render_template('about.html', title='О сайте', menu=menu)
 
 
-# создание тестового контекста запросов
-# для проверки работы url_for, не поднимая сервер
-with app.test_request_context():
-    print(url_for('index'))
+@app.route("/profile/<username>")
+def profile(username):
+    return f"Пользователь: {username}"
 
 
-# if __name__ == '__main__':
-#     app.run()
+# @app.route("/profile/<path:username>")
+# def profile(username):
+#     return f"Пользователь: {username}"
+
+
+# @app.route("/profile/<int:username>/<path>")
+# def profile(username, path):
+#     return f"Пользователь: {username}, {path}"
+
+
+if __name__ == '__main__':
+    app.run()
