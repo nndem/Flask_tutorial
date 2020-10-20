@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, flash, redirect, session
+from flask import Flask, render_template, url_for, request, flash, redirect, session, abort
 
 app = Flask(__name__)
 
@@ -36,6 +36,8 @@ def contact():
 
 @app.route("/profile/<username>")
 def profile(username):
+    if "userLogged" not in session or session["userLogged"] != username:
+        abort(401)
     return f"Пользователь: {username}"
 
 
@@ -48,7 +50,6 @@ def login():
         return redirect(url_for("profile", username=session["userLogged"]))
 
     return render_template("login.html", title="Авторизация", menu=menu)
-
 
 
 # обработчик ошибок
