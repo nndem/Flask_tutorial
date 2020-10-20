@@ -33,7 +33,12 @@ def contact():
         else:
             flash('Ошибка отправки', category='error')
 
-    return render_template('contact.html', title='Обратная связь', menu=menu)
+    return render_template('contact.html', title='Обратная связь', menu=menu), 404
+
+# обработчик ошибок
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('page404.html', title="Страница не найдена", menu=menu)
 
 
 if __name__ == '__main__':
