@@ -29,3 +29,16 @@ class FDataBase:
             return False
 
         return True
+
+    def getPost(self, postId):
+        sql = f"SELECT title, text FROM posts WHERE id = {postId} LIMIT 1"
+        try:
+            self.__cur.execute(sql)
+            res = self.__cur.fetchone()
+            if res: return res
+        except sqlite3.Error as e:
+            print("Ошибка получения статьи из БД"+str(e))
+
+        return (False, False)
+
+
