@@ -115,3 +115,7 @@ ul.profile-info {
 	color: #7E652F;
 }
 ul.profile-info li {margin-top: 10px;}
+
+label input {
+	margin-left: 15px;
+}
