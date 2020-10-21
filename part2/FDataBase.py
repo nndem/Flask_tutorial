@@ -1,3 +1,8 @@
+import math
+import sqlite3
+import time
+
+
 class FDataBase:
     def __init__(self, db):
         self.__db = db
@@ -12,3 +17,15 @@ class FDataBase:
         except:
             print("Ошибка чтения из БД")
             return []
+
+    def addPost(self, title, text):
+        sql = """ INSERT INTO posts VALUES(NULL, ?, ?, ?) """
+        try:
+            tm = math.floor(time.time())
+            self.__cur.execute(sql, (title, text, tm))
+            self.__db.commit()
+        except sqlite3.Error as e:
+            print("Ошибка добавления статьи в БД" + str(e))
+            return False
+
+        return True
