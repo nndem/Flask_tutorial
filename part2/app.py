@@ -40,15 +40,12 @@ def get_db():
 @app.route("/")
 def index():
     db = get_db()
-    # Создание экземпляра вспомогательного класса и вызов его метода
-    # для заполнения index.html
     dbase = FDataBase(db)
-    return render_template("index.html", menu=dbase.getMenu())
+    return render_template("index.html", menu=dbase.getMenu(), posts=dbase.getPostsAnonce())
 
 
 @app.teardown_appcontext
 def close_db(error):
-    """Закрываем соединение с БД, если оно было установлено"""
     if hasattr(g, 'link_db'):
         g.link_db.close()
 
