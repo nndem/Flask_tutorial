@@ -41,6 +41,12 @@ def index():
     return render_template("index.html", menu=[])
 
 
+@app.teardown_appcontext
+def close_db(error):
+    """Закрываем соединение с БД, если оно было установлено"""
+    if hasattr(g, 'link_db'):
+        g.link_db.close()
+
 
 if __name__ == "__main__":
     app.run()
