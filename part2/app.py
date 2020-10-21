@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, g
+from flask import Flask, render_template, request, g, flash
 import sqlite3
 import os
 
@@ -51,6 +51,25 @@ def close_db(error):
     """Закрываем соединение с БД, если оно было установлено"""
     if hasattr(g, 'link_db'):
         g.link_db.close()
+
+
+@app.route("/add_post", methods=["POST", "GET"])
+def addPost():
+    db = get_db()
+    dbase = FDataBase(db)
+
+    if request.method == "POST":
+        if len(request.form["name"]) > 4 and \
+               len(request.form["post"]) > 10:
+            res = dbase.addPost(request.form["name"], request.form["post"])
+            if not res:
+                flash("Ошибка добавления статьи", category="error")
+            else:
+                flash("Статья успешно добавлена", category="success")
+        else:
+            flash("Ошибка добавления статьи", category="error")
+
+    return render_template("add_post.html", menu=dbase.getMenu(), title="Добавление статьи")
 
 
 if __name__ == "__main__":
