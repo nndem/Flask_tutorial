@@ -3,6 +3,8 @@ import sqlite3
 import os
 
 # конфигурация
+from FDataBase import FDataBase
+
 DATABASE = "/tmp/site.db"
 DEBUG = True
 SECRET_KEY = "secret_key"
@@ -38,7 +40,10 @@ def get_db():
 @app.route("/")
 def index():
     db = get_db()
-    return render_template("index.html", menu=[])
+    # Создание экземпляра вспомогательного класса и вызов его метода
+    # для заполнения index.html
+    dbase = FDataBase(db)
+    return render_template("index.html", menu=dbase.getMenu())
 
 
 @app.teardown_appcontext
