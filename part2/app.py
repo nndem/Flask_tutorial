@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, g, flash
+from flask import Flask, render_template, request, g, flash, abort
 import sqlite3
 import os
 
@@ -70,6 +70,17 @@ def addPost():
             flash("Ошибка добавления статьи", category="error")
 
     return render_template("add_post.html", menu=dbase.getMenu(), title="Добавление статьи")
+
+
+@app.route("/post/<int:id_post>")
+def showPost(id_post):
+    db = get_db()
+    dbase = FDataBase(db)
+    title, post = dbase.getPost(id_post)
+    if not title:
+        abort(404)
+
+    return render_template("post.html", menu=dbase.getMenu(), post=post)
 
 
 if __name__ == "__main__":
