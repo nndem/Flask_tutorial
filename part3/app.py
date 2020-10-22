@@ -8,11 +8,16 @@ menu = [{"title": "Главная", "url": "/"},
 
 @app.route('/')
 def index():
-    #  формирование кастомного ответа сервера с использованием make_response
-    content = render_template("index.html", menu=menu, posts=[])
-    res = make_response(content)
-    res.headers["Content-Type"] = "text/plain"
-    res.headers["Server"] = "FlaskServer"
+    #  формирование кастомного ответа сервера с использованием open_resource() и make_response()
+    img = None
+    with app.open_resource(app.root_path + "/static/images/ava.jpg", mode="rb") as f:
+        img = f.read()
+
+    if img is None:
+        return "None image"
+
+    res = make_response(img)
+    res.headers["Content-Type"] = "image/jpg"
     return res
 
 
