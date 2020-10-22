@@ -8,9 +8,13 @@ menu = [{"title": "Главная", "url": "/"},
 
 @app.route('/')
 def index():
-    #  формирование кастомного ответа сервера с использованием make_response() и кода ответа
-    res = make_response("<h1>Ошибка сервера</h1>", 500)
-    return res
+    # Формирование кастомного ответа при помощи кортежа
+    return "<h1>Main Page</h1>", 200, {"Content-Type": "text/plain"}
+
+
+@app.errorhandler(404)
+def pageNot(error):
+    return ("Страница не найдена", 404)
 
 
 if __name__ == '__main__':
