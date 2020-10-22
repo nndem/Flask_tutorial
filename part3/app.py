@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, make_response
 
 app = Flask(__name__)
 
@@ -8,8 +8,12 @@ menu = [{"title": "Главная", "url": "/"},
 
 @app.route('/')
 def index():
-    #  формирование ответа сервера по умолчанию
-    return render_template("index.html", menu=menu, posts=[])
+    #  формирование кастомного ответа сервера с использованием make_response
+    content = render_template("index.html", menu=menu, posts=[])
+    res = make_response(content)
+    res.headers["Content-Type"] = "text/plain"
+    res.headers["Server"] = "FlaskServer"
+    return res
 
 
 if __name__ == '__main__':
