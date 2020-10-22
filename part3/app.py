@@ -8,16 +8,8 @@ menu = [{"title": "Главная", "url": "/"},
 
 @app.route('/')
 def index():
-    #  формирование кастомного ответа сервера с использованием open_resource() и make_response()
-    img = None
-    with app.open_resource(app.root_path + "/static/images/ava.jpg", mode="rb") as f:
-        img = f.read()
-
-    if img is None:
-        return "None image"
-
-    res = make_response(img)
-    res.headers["Content-Type"] = "image/jpg"
+    #  формирование кастомного ответа сервера с использованием make_response() и кода ответа
+    res = make_response("<h1>Ошибка сервера</h1>", 500)
     return res
 
 
