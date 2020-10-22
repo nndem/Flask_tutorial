@@ -1,4 +1,4 @@
-from flask import Flask, render_template, make_response
+from flask import Flask, render_template, make_response, redirect, url_for
 
 app = Flask(__name__)
 
@@ -15,6 +15,12 @@ def index():
 @app.errorhandler(404)
 def pageNot(error):
     return ("Страница не найдена", 404)
+
+
+@app.route("/transfer")
+# перенаправляем URL на главную страницу с кодом 301 (навсегда)
+def transfer():
+    return redirect(url_for("index"), 301)
 
 
 if __name__ == '__main__':
