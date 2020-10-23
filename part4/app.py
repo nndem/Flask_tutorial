@@ -22,5 +22,12 @@ def login():
     return res
 
 
+@app.route("/logout")
+def logout():
+    res = make_response("<p>Вы больше не авторизованы!</p>")
+    res.set_cookie("logged", "", 0)
+    return res
+
+
 if __name__ == '__main__':
     app.run()
