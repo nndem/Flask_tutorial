@@ -36,6 +36,15 @@ def get_db():
     return g.link_db
 
 
+dbase = None
+@app.before_request
+def before_request():
+    """Установление соединения с БД перед выполненим запроса"""
+    global dbase
+    db = get_db()
+    dbase = FDataBase(db)
+
+
 @app.teardown_appcontext
 def close_db(error):
     if hasattr(g, 'link_db'):
@@ -44,16 +53,11 @@ def close_db(error):
 
 @app.route("/")
 def index():
-    db = get_db()
-    dbase = FDataBase(db)
     return render_template("index.html", menu=dbase.getMenu(), posts=dbase.getPostsAnonce())
 
 
 @app.route("/add_post", methods=["POST", "GET"])
 def addPost():
-    db = get_db()
-    dbase = FDataBase(db)
-
     if request.method == "POST":
         if len(request.form["name"]) > 4 and \
                len(request.form["post"]) > 10:
@@ -70,8 +74,6 @@ def addPost():
 
 @app.route("/post/<alias>")
 def showPost(alias):
-    db = get_db()
-    dbase = FDataBase(db)
     title, post = dbase.getPost(alias)
     if not title:
         abort(404)
