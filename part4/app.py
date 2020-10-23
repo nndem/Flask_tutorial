@@ -1,32 +1,16 @@
-from flask import Flask, request, make_response
+from flask import Flask, request, make_response, session
 
 app = Flask(__name__)
-
-menu = [{"title": "Главная", "url": "/"},
-        {"title": "Добавить статью", "url": "/add_post"}]
+app.config["SECRET_KEY"] = "1213377564b1ff2de1f8e24caddea9f73736cfa1"
 
 
-@app.route('/')
+@app.route("/")
 def index():
-    return "<h1>Main Page</h1>"
-
-
-@app.route("/login")
-def login():
-    log = ""
-    if request.cookies.get("logged"):
-        log = request.cookies.get("logged")
-
-    res = make_response(f"<h1>Форма авторизации</h1><p>logged: {log}")
-    res.set_cookie("logged", "yes")
-    return res
-
-
-@app.route("/logout")
-def logout():
-    res = make_response("<p>Вы больше не авторизованы!</p>")
-    res.set_cookie("logged", "", 0)
-    return res
+    if "visits" in session:
+        session["visits"] = session.get("visits") + 1  # обновление данных в сессии
+    else:
+        session["visits"] = 1  # запись данных в сессию
+    return f"<h1>Main Page</h1><p>Число просмотров: {session['visits']}"
 
 
 if __name__ == '__main__':
