@@ -62,3 +62,22 @@ class FDataBase:
 
         return []
 
+    def addUser(self, name, email, hpsw):
+        sql_count = f"SELECT COUNT() as `count` FROM users WHERE email LIKE '{email}'"
+        sql_ins = f"INSERT INTO users VALUES(NULL, ?,?,?,?)"
+        try:
+            self.__cur.execute(sql_count)
+            res = self.__cur.fetchone()
+            if res['count'] > 0:
+                print("Пользователь с таким email уже существует")
+                return False
+
+            tm = math.floor(time.time())
+            self.__cur.execute(sql_ins, (name, email, hpsw, tm))
+            self.__db.commit()
+        except sqlite3.Error as e:
+            print("Ошибка добавлеия пользователя в БД "+str(e))
+            return False
+
+        return True
+
