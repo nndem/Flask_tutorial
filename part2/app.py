@@ -1,13 +1,12 @@
 from flask import Flask, render_template, request, g, flash, abort
 import sqlite3
 import os
-
-# конфигурация
 from FDataBase import FDataBase
 
+# конфигурация
 DATABASE = "/tmp/site.db"
 DEBUG = True
-SECRET_KEY = "secret_key"
+SECRET_KEY = "33306205a5c1a08539dcd75680aacd718f0c6ebd"
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -37,17 +36,17 @@ def get_db():
     return g.link_db
 
 
+@app.teardown_appcontext
+def close_db(error):
+    if hasattr(g, 'link_db'):
+        g.link_db.close()
+
+
 @app.route("/")
 def index():
     db = get_db()
     dbase = FDataBase(db)
     return render_template("index.html", menu=dbase.getMenu(), posts=dbase.getPostsAnonce())
-
-
-@app.teardown_appcontext
-def close_db(error):
-    if hasattr(g, 'link_db'):
-        g.link_db.close()
 
 
 @app.route("/add_post", methods=["POST", "GET"])
