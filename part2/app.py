@@ -3,7 +3,8 @@ import sqlite3
 import os
 from FDataBase import FDataBase
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from flask_login import LoginManager, login_user, login_required
+from user import User
 
 # конфигурация
 DATABASE = "/tmp/site.db"
@@ -14,6 +15,8 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 
 app.config.update(dict(DATABASE=os.path.join(app.root_path, "site.db")))
+
+login_manager = LoginManager(app)
 
 
 def connect_db():
@@ -75,17 +78,13 @@ def addPost():
 
 
 @app.route("/post/<alias>")
+@login_required
 def showPost(alias):
     title, post = dbase.getPost(alias)
     if not title:
         abort(404)
 
     return render_template("post.html", menu=dbase.getMenu(), post=post)
-
-
-@app.route("/login")
-def login():
-    return render_template("login.html", menu=dbase.getMenu(), title="Авторизация")
 
 
 @app.route("/register", methods=["POST", "GET"])
@@ -107,6 +106,35 @@ def register():
             flash("Неверно заполнены поля", category="error")
 
     return render_template("register.html", menu=dbase.getMenu(), title="Регистрация")
+
+
+"""
+Функция login_user помещает id пользователя в сессию
+"""
+@app.route("/login", methods=["POST", "GET"])
+def login():
+    if request.method == "POST":
+        user_from_DB = dbase.getUserByEmail(request.form.get("email"))
+        if user_from_DB and check_password_hash(user_from_DB['psw'], request.form.get("password")):
+            user_for_session = User.create(user_from_DB)
+            login_user(user_for_session, remember=True)
+            return redirect(url_for("index"))
+
+        flash("Неверная пара логин/пароль", category="error")
+
+    return render_template("login.html", menu=dbase.getMenu(), title="Авторизация")
+
+
+"""
+Извлекает из сессии id пользователя
+Эта функция сработает если в сессии действительно есть объект user_for_session
+для которого реализован метод get_id
+"""
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User().fromDB(user_id, dbase)
 
 
 if __name__ == "__main__":
