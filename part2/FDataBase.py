@@ -1,3 +1,8 @@
+"""
+This class represents solution instead of using an Alchemy
+The class is binding the DB with others functions even with modelOfUser
+"""
+
 import math
 import sqlite3
 import time
@@ -81,3 +86,32 @@ class FDataBase:
 
         return True
 
+    def getUserById(self, user_id):
+        """
+        this method will be used for creating a modelOfUser that will be stored in session
+        """
+        sql_get = f"SELECT * FROM users WHERE id={user_id} LIMIT 1"
+        try:
+            self.__cur.execute(sql_get)
+            res = self.__cur.fetchone()
+            if not res:
+                print("Пользователь не найден")
+                return False
+        except sqlite3.Error as e:
+            print("Ошибка получения данных из БД" + str(e))
+
+        return False
+
+    def getUserByEmail(self, email):
+        """
+        this  method will be used for checking email while authorization
+        """
+        sql_get = f"SELECT * FROM users WHERE email={email} LIMIT 1"
+        try:
+            self.__cur.execute(sql_get)
+            res = self.__cur.fetchone()
+            if not res:
+                print("Пользователь не найден")
+                return False
+        except sqlite3.Error as e:
+            print("Ошибка получения данных из БД" + str(e))
