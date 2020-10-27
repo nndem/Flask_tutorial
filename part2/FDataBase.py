@@ -90,13 +90,14 @@ class FDataBase:
         """
         this method will be used for creating a modelOfUser that will be stored in session
         """
-        sql_get = f"SELECT * FROM users WHERE id={user_id} LIMIT 1"
+        sql_get = f"SELECT * FROM users WHERE id ={user_id} LIMIT 1"
         try:
             self.__cur.execute(sql_get)
             res = self.__cur.fetchone()
             if not res:
                 print("Пользователь не найден")
                 return False
+            return res
         except sqlite3.Error as e:
             print("Ошибка получения данных из БД" + str(e))
 
@@ -106,12 +107,13 @@ class FDataBase:
         """
         this  method will be used for checking email while authorization
         """
-        sql_get = f"SELECT * FROM users WHERE email={email} LIMIT 1"
+        sql_get = f"""SELECT * FROM users WHERE email="{email}" LIMIT 1"""
         try:
             self.__cur.execute(sql_get)
             res = self.__cur.fetchone()
             if not res:
                 print("Пользователь не найден")
                 return False
+            return res
         except sqlite3.Error as e:
             print("Ошибка получения данных из БД" + str(e))

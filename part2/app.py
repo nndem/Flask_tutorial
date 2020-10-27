@@ -116,8 +116,9 @@ def login():
     if request.method == "POST":
         user_from_DB = dbase.getUserByEmail(request.form.get("email"))
         if user_from_DB and check_password_hash(user_from_DB['psw'], request.form.get("password")):
-            user_for_session = User.create(user_from_DB)
-            login_user(user_for_session, remember=True)
+            user_for_session = User().create(user_from_DB)
+            login_user(user_for_session)
+            print("POINT")
             return redirect(url_for("index"))
 
         flash("Неверная пара логин/пароль", category="error")

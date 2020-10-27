@@ -13,8 +13,12 @@ class User(UserMixin):
 
     def fromDB(self, user_id, db):
         self.__user = db.getUserById(user_id)
+        return self
 
     def create(self, user):
         self.__user = user
         return self
+
+    def get_id(self):
+        return str(self.__user['id'])
 
