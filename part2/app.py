@@ -115,6 +115,9 @@ def register():
 """
 @app.route("/login", methods=["POST", "GET"])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('profile'))
+
     if request.method == "POST":
         user_from_DB = dbase.getUserByEmail(request.form.get("email"))
         if user_from_DB and check_password_hash(user_from_DB['psw'], request.form.get("password")):
