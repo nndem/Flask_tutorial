@@ -3,7 +3,7 @@ import sqlite3
 import os
 from FDataBase import FDataBase
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import LoginManager, login_user, login_required
+from flask_login import LoginManager, login_user, login_required, current_user, logout_user
 from user import User
 
 # конфигурация
@@ -119,7 +119,7 @@ def login():
             user_for_session = User().create(user_from_DB)
             login_user(user_for_session)
             print("POINT")
-            return redirect(url_for("index"))
+            return redirect(url_for("profile"))
 
         flash("Неверная пара логин/пароль", category="error")
 
@@ -136,6 +136,20 @@ def login():
 @login_manager.user_loader
 def load_user(user_id):
     return User().fromDB(user_id, dbase)
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    flash("Вы вышли из аккаунта", category="success")
+    return redirect(url_for("login"))
+
+
+@app.route("/profile")
+@login_required
+def profile():
+    return f"""<p><a href="{url_for('logout')}">Выйти из профиля</a>
+               <p>user info: {current_user.get_id()}"""
 
 
 if __name__ == "__main__":
