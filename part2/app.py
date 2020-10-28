@@ -17,7 +17,9 @@ app.config.from_object(__name__)
 app.config.update(dict(DATABASE=os.path.join(app.root_path, "site.db")))
 
 login_manager = LoginManager(app)
-
+login_manager.login_view = "login" # redirect for unauthorized users by default
+login_manager.login_message = "Авторизуйтесь для доступа к закрытым ресурсам"
+login_manager.login_message_category = "success"
 
 def connect_db():
     conn = sqlite3.connect(app.config['DATABASE'])
@@ -117,7 +119,8 @@ def login():
         user_from_DB = dbase.getUserByEmail(request.form.get("email"))
         if user_from_DB and check_password_hash(user_from_DB['psw'], request.form.get("password")):
             user_for_session = User().create(user_from_DB)
-            login_user(user_for_session)
+            remember_me = True if request.form.get("remainme") else False
+            login_user(user_for_session, remember=True)
             print("POINT")
             return redirect(url_for("profile"))
 
