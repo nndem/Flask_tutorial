@@ -123,9 +123,9 @@ def login():
         if user_from_DB and check_password_hash(user_from_DB['psw'], request.form.get("password")):
             user_for_session = User().create(user_from_DB)
             remember_me = True if request.form.get("remainme") else False
-            login_user(user_for_session, remember=True)
+            login_user(user_for_session, remember=remember_me)
             print("POINT")
-            return redirect(url_for("profile"))
+            return redirect(request.args.get("next") or url_for("profile"))
 
         flash("Неверная пара логин/пароль", category="error")
 
