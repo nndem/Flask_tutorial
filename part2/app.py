@@ -134,18 +134,6 @@ def login():
     return render_template("login.html", menu=dbase.getMenu(),
                            title="Авторизация", form=form)
 
-    # if request.method == "POST":
-    #     user_from_DB = dbase.getUserByEmail(request.form.get("email"))
-    #     if user_from_DB and check_password_hash(user_from_DB['psw'], request.form.get("password")):
-    #         user_for_session = User().create(user_from_DB)
-    #         remember_me = True if request.form.get("remainme") else False
-    #         login_user(user_for_session, remember=remember_me)
-    #         return redirect(request.args.get("next") or url_for("profile"))
-    #
-    #     flash("Неверная пара логин/пароль", category="error")
-    #
-    # return render_template("login.html", menu=dbase.getMenu(), title="Авторизация")
-
 
 """
 Извлекает из сессии id пользователя
