@@ -6,6 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required, current_user, logout_user
 from user import User
 from forms import LoginForm
+from forms import RegisterForm
 
 # конфигурация
 DATABASE = "/tmp/site.db"
@@ -93,23 +94,17 @@ def showPost(alias):
 
 @app.route("/register", methods=["POST", "GET"])
 def register():
-    if request.method == "POST":
-        if len(request.form["name"]) > 4 and \
-           len(request.form["email"]) > 4 and \
-           len(request.form["psw"]) > 4 and \
-           request.form["psw"] == request.form["psw2"]:
-
-            hash = generate_password_hash(request.form["psw"])
-            res = dbase.addUser(request.form["name"], request.form["email"], hash)
-            if res:
-                flash("Вы успешно зарегистрированы", category="success")
-                return redirect(url_for("login"))
-            else:
-                flash("Ошибка при добвалении в БД", category="error")
+    form = RegisterForm()
+    if form.validate_on_submit():
+        hash = generate_password_hash(form.psw.data)
+        res = dbase.addUser(form.name.data, form.email.data, hash)
+        if res:
+            flash("Вы успешно зарегистрированы", category="success")
+            return redirect(url_for("login"))
         else:
-            flash("Неверно заполнены поля", category="error")
+            flash("Ошибка при добвалении в БД", category="error")
 
-    return render_template("register.html", menu=dbase.getMenu(), title="Регистрация")
+    return render_template("register.html", menu=dbase.getMenu(), title="Регистрация", form=form)
 
 
 """
