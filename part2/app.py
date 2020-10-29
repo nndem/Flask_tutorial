@@ -5,6 +5,7 @@ from FDataBase import FDataBase
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required, current_user, logout_user
 from user import User
+from forms import LoginForm
 
 # конфигурация
 DATABASE = "/tmp/site.db"
@@ -119,18 +120,31 @@ def login():
     if current_user.is_authenticated:
         return redirect(url_for('profile'))
 
-    if request.method == "POST":
-        user_from_DB = dbase.getUserByEmail(request.form.get("email"))
-        if user_from_DB and check_password_hash(user_from_DB['psw'], request.form.get("password")):
+    form = LoginForm()
+    if form.validate_on_submit():
+        user_from_DB = dbase.getUserByEmail(form.email.data)
+        if user_from_DB and check_password_hash(user_from_DB['psw'], form.psw.data):
             user_for_session = User().create(user_from_DB)
-            remember_me = True if request.form.get("remainme") else False
+            remember_me = form.remember.data
             login_user(user_for_session, remember=remember_me)
-            print("POINT")
             return redirect(request.args.get("next") or url_for("profile"))
 
         flash("Неверная пара логин/пароль", category="error")
 
-    return render_template("login.html", menu=dbase.getMenu(), title="Авторизация")
+    return render_template("login.html", menu=dbase.getMenu(),
+                           title="Авторизация", form=form)
+
+    # if request.method == "POST":
+    #     user_from_DB = dbase.getUserByEmail(request.form.get("email"))
+    #     if user_from_DB and check_password_hash(user_from_DB['psw'], request.form.get("password")):
+    #         user_for_session = User().create(user_from_DB)
+    #         remember_me = True if request.form.get("remainme") else False
+    #         login_user(user_for_session, remember=remember_me)
+    #         return redirect(request.args.get("next") or url_for("profile"))
+    #
+    #     flash("Неверная пара логин/пароль", category="error")
+    #
+    # return render_template("login.html", menu=dbase.getMenu(), title="Авторизация")
 
 
 """
