@@ -69,7 +69,7 @@ class FDataBase:
 
     def addUser(self, name, email, hpsw):
         sql_count = f"SELECT COUNT() as `count` FROM users WHERE email LIKE '{email}'"
-        sql_ins = f"INSERT INTO users VALUES(NULL, ?,?,?,?)"
+        sql_ins = f"INSERT INTO users VALUES(NULL, ?,?,?,NULL,?)"
         try:
             self.__cur.execute(sql_count)
             res = self.__cur.fetchone()
@@ -117,3 +117,20 @@ class FDataBase:
             return res
         except sqlite3.Error as e:
             print("Ошибка получения данных из БД" + str(e))
+
+    def updateUserAvatar(self, avatar, user_id):
+        if not avatar:
+            return False
+        sql = f"UPDATE users " \
+              f"SET avatar = ?" \
+              f"WHERE id = ?"
+
+        try:
+            binary = sqlite3.Binary(avatar)
+            self.__cur.execute(sql, (binary, user_id))
+            self.__db.commit()
+        except sqlite3.Error as e:
+            print("Ошибка обновления аватара в БД: ", str(e))
+            return False
+        return True
+
