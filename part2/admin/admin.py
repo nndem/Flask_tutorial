@@ -15,7 +15,7 @@ def logout_admin():
     session.pop("admin_logged", None)
 
 
-menu = [{"url": "index", "title": "Панель"},
+menu = [{"url": "",  "title": "Панель"},
         {"url": "logout", "title": "Выйти"}]
 
 
