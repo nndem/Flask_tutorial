@@ -7,6 +7,7 @@ from flask_login import LoginManager, login_user, login_required, current_user, 
 from user import User
 from forms import LoginForm
 from forms import RegisterForm
+from admin.admin import admin
 
 # конфигурация
 DATABASE = "/tmp/site.db"
@@ -16,8 +17,9 @@ MAX_CONTENT_LENGTH = 1024 * 1024
 
 app = Flask(__name__)
 app.config.from_object(__name__)
-
 app.config.update(dict(DATABASE=os.path.join(app.root_path, "site.db")))
+
+app.register_blueprint(admin, url_prefix="/admin")
 
 login_manager = LoginManager(app)
 login_manager.login_view = "login" # redirect for unauthorized users by default
